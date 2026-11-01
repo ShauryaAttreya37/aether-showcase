@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aether Smart Badge · Shaurya Attreya</title>
+<meta name="description" content="A wearable PM2.5 dose badge, phone app and Delhi air-quality forecast. Designed and built by Shaurya Attreya.">
+<meta name="author" content="Shaurya Attreya">
+<link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1d232a;
+    --muted: #5d6874;
+    --line: #dde3e9;
+    --code-bg: #f6f8fa;
+    --link: #0b62c4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1318;
+      --fg: #e4e9ee;
+      --muted: #9aa6b2;
+      --line: #2a323b;
+      --code-bg: #161b22;
+      --link: #6cb0ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 780px; margin: 0 auto; padding: 48px 16px 64px; }
+  a { color: var(--link); }
+  h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.35rem; margin: 56px 0 12px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .lede { font-size: 1.15rem; margin: 0 0 20px; }
+  .credit { margin: 0 0 8px; font-weight: 600; }
+  .links { margin: 0; color: var(--muted); }
+  dl.facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 20px; margin: 28px 0 0; }
+  dl.facts dt { color: var(--muted); }
+  dl.facts dd { margin: 0; }
+  figure { margin: 24px 0; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  figcaption, .note { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+  th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  .table-wrap { overflow-x: auto; }
+  .code { margin: 20px 0 28px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .code-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 8px 12px; background: var(--code-bg); border-bottom: 1px solid var(--line); font-size: 0.85rem; }
+  .code-head code { font-weight: 600; }
+  pre { margin: 0; max-height: 520px; overflow: auto; }
+  pre code.hljs { padding: 14px 16px; font-size: 13.5px; line-height: 1.5; background: var(--code-bg); }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  p code { font-size: 0.9em; background: var(--code-bg); padding: 1px 4px; border-radius: 4px; }
+  footer { margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+  @media (max-width: 520px) {
+    body { font-size: 16px; }
+    h1 { font-size: 1.7rem; }
+    dl.facts { grid-template-columns: 1fr; gap: 0; }
+    dl.facts dd { margin-bottom: 10px; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Aether Smart Badge</h1>
+  <p class="lede">A clip-on badge that measures the PM2.5 an outdoor worker breathes, buzzes before exposure gets dangerous, and adds up the dose over a shift. A phone app reads it over Bluetooth and shows a 72-hour pollution forecast for Delhi.</p>
+  <p class="credit">Designed and built by Shaurya Attreya</p>
+  <p class="links">
+    <a href="https://github.com/ShauryaAttreya37/aether-smart-badge">Source code</a> ·
+    <a href="https://github.com/ShauryaAttreya37">GitHub</a> ·
+    <a href="https://shaurya-attreya-portfolio.vercel.app">Portfolio</a>
+  </p>
+  <dl class="facts">
+    <dt>My role</dt><dd>Solo build: firmware, PCB, enclosure, phone app, API server, forecast model</dd>
+    <dt>Built for</dt><dd>vivo Ignite 2026, a national student innovation competition in India</dd>
+    <dt>When</dt><dd>July to September 2026</dd>
+    <dt>Stack</dt><dd>C++ on ESP32-C3 (PlatformIO) · JavaScript PWA with Web Bluetooth · Python, FastAPI · PyTorch, scikit-learn, ONNX · KiCad, CadQuery, FreeCAD</dd>
+    <dt>Parts cost</dt><dd>₹4,433 for the core build</dd>
+  </dl>
+</header>
+
+<h2>Why</h2>
+<p>Delhi publishes hourly air-quality numbers for the city and for about forty monitoring stations. A traffic constable standing at one junction for eight hours breathes something different, and nobody records what they accumulate. The badge measures at the person, and the phone integrates concentration over time into a dose in µg·h/m³, compared against a budget for that job.</p>
+
+<figure>
+  <img src="img/system-architecture.svg" alt="Architecture: the badge sends PM2.5 to the phone over BLE, the phone writes alert commands back, and a FastAPI server sends a 72-hour forecast grid produced by an offline model pipeline.">
+  <figcaption>Three parts. The badge never runs the model, and the server never sees who is wearing a badge.</figcaption>
+</figure>
+
+<h2>The badge</h2>
+<p>A Seeed XIAO ESP32-C3 reads a Sensirion SPS30 laser particle sensor over UART and a BME280 for temperature and humidity over I²C. It shows the reading on a 2.8" TFT, drives a haptic motor and an alert LED, and sends readings to the phone every 5 seconds over a custom BLE GATT service. Dose is saved to flash every minute so a reset does not lose the shift.</p>
+<p>The badge has its own alert thresholds so it still works with no phone nearby. When the phone is connected it can escalate the alert using dose and forecast, but it can never lower one.</p>
+
+<div class="code">
+  <div class="code-head"><code>firmware/src/main.cpp</code><a href="https://github.com/ShauryaAttreya37/aether-smart-badge/blob/main/firmware/src/main.cpp#L207-L224">lines 207–224 on GitHub</a></div>
+  <pre><code class="language-cpp">
+// HW.11 — the badge decides for itself when no phone is paired, and the app&#x27;s
+// richer decision (which knows dose and forecast) overrides it while fresh.
+AlertTier decideAlert() {
+  AlertTier local = ALERT_NONE;
+
+  if (state.pm25 != PM25_FAULT) {
+    if (state.pm25 &gt;= LOCAL_THRESHOLD_DANGER)       local = ALERT_DANGER;
+    else if (state.pm25 &gt;= LOCAL_THRESHOLD_CAUTION) local = ALERT_CAUTION;
+    else if (state.pm25 &gt;= LOCAL_THRESHOLD_INFO)    local = ALERT_INFORMATION;
+  }
+
+  // The phone can raise the alert using dose and forecast context, but it can
+  // never lower a live safety alert. A stale or malformed phone must not be
+  // able to silence the badge.
+  if (!ble.hasAppAlert()) return local;
+  return (ble.appAlert() &gt; local) ? ble.appAlert() : local;
+}</code></pre>
+</div>
+
+<p>Bring-up had real hardware faults. One was an I²C sensor that latched the bus low mid-byte. A CPU reset doesn't clear that, because the sensor never loses power, so the firmware clocks the stuck byte out by hand at boot:</p>
+
+<div class="code">
+  <div class="code-head"><code>firmware/src/main.cpp</code><a href="https://github.com/ShauryaAttreya37/aether-smart-badge/blob/main/firmware/src/main.cpp#L59-L102">lines 59–102 on GitHub</a></div>
+  <pre><code class="language-cpp">// An I2C slave interrupted mid-byte keeps holding SDA low and the bus stays
+// dead. A CPU reset does not fix it -- the sensor never loses power, so the
+// latch survives resets, reflashes and the USB download handshake. Only a
+// power cycle or this routine clears it: release SDA, pulse SCL up to nine
+// times to walk the stuck byte out, then issue a STOP.
+//
+// Observed on 10 Aug 2026: the bus sat at SDA=0 SCL=0 across many resets and
+// came back only when the USB cable was pulled.
+static void recoverI2cBus() {
+  pinMode(PIN_I2C_SDA, INPUT_PULLUP);
+  pinMode(PIN_I2C_SCL, INPUT_PULLUP);
+  delay(5);
+
+  if (digitalRead(PIN_I2C_SDA) == HIGH &amp;&amp; digitalRead(PIN_I2C_SCL) == HIGH) return;
+
+  Serial.printf(&quot;[i2c] bus stuck (SDA=%d SCL=%d), recovering\n&quot;,
+                digitalRead(PIN_I2C_SDA), digitalRead(PIN_I2C_SCL));
+
+  pinMode(PIN_I2C_SCL, OUTPUT_OPEN_DRAIN);
+  digitalWrite(PIN_I2C_SCL, HIGH);
+  for (int i = 0; i &lt; 9 &amp;&amp; digitalRead(PIN_I2C_SDA) == LOW; ++i) {
+    digitalWrite(PIN_I2C_SCL, LOW);
+    delayMicroseconds(10);
+    digitalWrite(PIN_I2C_SCL, HIGH);
+    delayMicroseconds(10);
+  }
+
+  // STOP condition: SDA released while SCL is high.
+  pinMode(PIN_I2C_SDA, OUTPUT_OPEN_DRAIN);
+  digitalWrite(PIN_I2C_SDA, LOW);
+  delayMicroseconds(10);
+  digitalWrite(PIN_I2C_SCL, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(PIN_I2C_SDA, HIGH);
+  delayMicroseconds(10);
+
+  pinMode(PIN_I2C_SDA, INPUT_PULLUP);
+  pinMode(PIN_I2C_SCL, INPUT_PULLUP);
+  delay(5);
+  Serial.printf(&quot;[i2c] after recovery SDA=%d SCL=%d%s\n&quot;,
+                digitalRead(PIN_I2C_SDA), digitalRead(PIN_I2C_SCL),
+                (digitalRead(PIN_I2C_SDA) == HIGH &amp;&amp; digitalRead(PIN_I2C_SCL) == HIGH)
+                    ? &quot;&quot; : &quot; -- still stuck, power cycle the badge&quot;);
+}</code></pre>
+</div>
+
+<h2>The phone app</h2>
+<p>An installable web app with no framework and no build step at serve time. It connects to the badge with Web Bluetooth, integrates dose, decides alerts per job role (traffic police, delivery rider, construction), and shows which hours of the shift need a mask. Dose and location history stay on the phone. 142 tests cover the logic, colour contrast and render performance.</p>
+<p>The dose integrator uses the trapezoid rule between readings. A sensor fault breaks continuity, so the next good reading cannot integrate across a gap with no data:</p>
+
+<div class="code">
+  <div class="code-head"><code>app/js/dose.mjs</code><a href="https://github.com/ShauryaAttreya37/aether-smart-badge/blob/main/app/js/dose.mjs#L37-L70">lines 37–70 on GitHub</a></div>
+  <pre><code class="language-javascript">function addSample(pm25, timestamp) {
+  if (pm25 === null || pm25 === undefined || !Number.isFinite(pm25)) {
+    // A fault is unmonitored time. Break continuity so the next valid
+    // reading cannot integrate across a period for which no samples exist.
+    state.lastSample = null;
+    return 0;
+  }
+
+  const sampledAt = timestamp || now();
+  if (state.startedAt === null) state.startedAt = sampledAt;
+
+  let increment = 0;
+  if (state.lastSample) {
+    const gapSeconds = (sampledAt - state.lastSample.t) / 1_000;
+    if (gapSeconds &gt; 0 &amp;&amp; gapSeconds &lt;= AETHER.MAX_GAP_SECONDS) {
+      const meanConcentration = (state.lastSample.pm25 + pm25) / 2;
+      increment = (meanConcentration * gapSeconds) / 3_600;
+      state.doseUgHours += increment;
+
+      const band = aqiBand(meanConcentration).name;
+      state.bandSeconds[band] = (state.bandSeconds[band] || 0) + gapSeconds;
+      state.bandDose[band] = (state.bandDose[band] || 0) + increment;
+    }
+  }
+
+  state.lastSample = { t: sampledAt, pm25 };
+  state.samples.push({ t: sampledAt, pm25, dose: state.doseUgHours });
+  if (state.samples.length &gt; MAX_SAMPLES) state.samples.shift();
+
+  state.peak = Math.max(state.peak, pm25);
+  state.sum += pm25;
+  state.count += 1;
+  return increment;
+}</code></pre>
+</div>
+
+<h2>The forecast model</h2>
+<p>The server publishes a 72-hour PM2.5 forecast on a 64 × 64 grid over Delhi, about 2.2 km per cell. Inputs are CPCB station readings, MODIS MAIAC aerosol optical depth, TROPOMI NO₂ and ERA5 weather (wind, boundary-layer height, temperature, humidity).</p>
+<p>I trained two models: a Fourier Neural Operator and a gradient-boosted field model. Before the first training run I committed an evaluation protocol: six stations held out by geography, a frozen test winter, and a pass mark of beating persistence at +24 hours. The FNO missed that mark. The gradient-boosted model passed, so it ships, and the app labels which model produced the forecast.</p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Horizon</th><th>Model MAE / RMSE</th><th>Persistence MAE / RMSE</th></tr></thead>
+  <tbody>
+    <tr><td>+1 h</td><td>52.14 / 83.05</td><td><strong>16.65 / 41.02</strong></td></tr>
+    <tr><td>+6 h</td><td><strong>50.11 / 80.33</strong></td><td>58.66 / 100.71</td></tr>
+    <tr><td>+24 h</td><td><strong>51.14 / 84.62</strong></td><td>51.86 / 99.46</td></tr>
+    <tr><td>+48 h</td><td><strong>52.60 / 87.29</strong></td><td>60.66 / 108.94</td></tr>
+    <tr><td>+72 h</td><td><strong>53.47 / 88.07</strong></td><td>64.78 / 114.55</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="note">µg/m³ on held-out stations, frozen test winter. Persistence means "the next hours look like now". It wins the first hour; after that the model's error stays flat while persistence's grows. Winter concentrations average 150–190 µg/m³.</p>
+
+<p>The FNO had to export to ONNX for the server, and the FFT ops did not survive the export. I wrote the spectral layer a second way, as explicit DFT matrix multiplies, and a self-test checks that the two paths agree:</p>
+
+<div class="code">
+  <div class="code-head"><code>model/fno.py</code><a href="https://github.com/ShauryaAttreya37/aether-smart-badge/blob/main/model/fno.py#L28-L38">lines 28–38 on GitHub</a></div>
+  <pre><code class="language-python">def _dft_matrix(n: int, dtype=torch.float32) -&gt; tuple[torch.Tensor, torch.Tensor]:
+    &quot;&quot;&quot;Real and imaginary parts of the n-point DFT matrix.
+
+    Used by the export-friendly path. Returns (cos, sin) each of shape
+    (n_freq, n) where n_freq = n // 2 + 1, matching rfft&#x27;s output length.
+    &quot;&quot;&quot;
+    n_freq = n // 2 + 1
+    k = torch.arange(n_freq, dtype=dtype).unsqueeze(1)   # (n_freq, 1)
+    x = torch.arange(n, dtype=dtype).unsqueeze(0)        # (1, n)
+    angle = -2.0 * torch.pi * k * x / n
+    return torch.cos(angle), torch.sin(angle)</code></pre>
+</div>
+<div class="code">
+  <div class="code-head"><code>model/fno.py</code><a href="https://github.com/ShauryaAttreya37/aether-smart-badge/blob/main/model/fno.py#L118-L189">lines 118–189 on GitHub</a></div>
+  <pre><code class="language-python">def _forward_dft(self, x: torch.Tensor) -&gt; torch.Tensor:
+    &quot;&quot;&quot;Same transform via explicit matmul, so it survives ONNX export.&quot;&quot;&quot;
+    batch, _, height, width = x.shape
+    scale = 1.0 / (height * width) ** 0.5  # matches norm=&quot;ortho&quot;
+
+    cos_h, sin_h = _dft_matrix(height, x.dtype)
+    cos_w, sin_w = _dft_matrix(width, x.dtype)
+    cos_h, sin_h = cos_h.to(x.device), sin_h.to(x.device)
+    cos_w, sin_w = cos_w.to(x.device), sin_w.to(x.device)
+
+    # Transform along width, then height. Real input, so start with
+    # zero imaginary part.
+    xr = torch.einsum(&quot;bchw,kw-&gt;bchk&quot;, x, cos_w) * scale
+    xi = torch.einsum(&quot;bchw,kw-&gt;bchk&quot;, x, sin_w) * scale
+
+    # Full (not one-sided) transform along height, so negative
+    # frequencies are addressable the same way as in the FFT path.
+    full_h = torch.arange(height, dtype=x.dtype, device=x.device)
+    k_h = torch.arange(height, dtype=x.dtype, device=x.device).unsqueeze(1)
+    angle_h = -2.0 * torch.pi * k_h * full_h.unsqueeze(0) / height
+    cos_full, sin_full = torch.cos(angle_h), torch.sin(angle_h)
+
+    xr2 = torch.einsum(&quot;bchk,jh-&gt;bcjk&quot;, xr, cos_full) - torch.einsum(
+        &quot;bchk,jh-&gt;bcjk&quot;, xi, sin_full
+    )
+    xi2 = torch.einsum(&quot;bchk,jh-&gt;bcjk&quot;, xr, sin_full) + torch.einsum(
+        &quot;bchk,jh-&gt;bcjk&quot;, xi, cos_full
+    )
+
+    out_r = torch.zeros(
+        batch, self.out_channels, height, width // 2 + 1,
+        dtype=x.dtype, device=x.device,
+    )
+    out_i = torch.zeros_like(out_r)
+
+    for sign, index in ((0, slice(None, self.modes_h)), (1, slice(-self.modes_h, None))):
+        real, imag = self._complex_mul(
+            xr2[:, :, index, : self.modes_w],
+            xi2[:, :, index, : self.modes_w],
+            self.weight_real[sign],
+            self.weight_imag[sign],
+        )
+        out_r[:, :, index, : self.modes_w] = real
+        out_i[:, :, index, : self.modes_w] = imag
+
+    # Inverse: conjugate transpose of the forward matrices.
+    yr = torch.einsum(&quot;bcjk,jh-&gt;bchk&quot;, out_r, cos_full) + torch.einsum(
+        &quot;bcjk,jh-&gt;bchk&quot;, out_i, sin_full
+    )
+    yi = torch.einsum(&quot;bcjk,jh-&gt;bchk&quot;, out_i, cos_full) - torch.einsum(
+        &quot;bcjk,jh-&gt;bchk&quot;, out_r, sin_full
+    )
+
+    # One-sided inverse along width: DC and Nyquist counted once, the
+    # rest twice, which is what reconstructs a real signal.
+    weight = torch.full((width // 2 + 1,), 2.0, dtype=x.dtype, device=x.device)
+    weight[0] = 1.0
+    if width % 2 == 0:
+        weight[-1] = 1.0
+
+    # Re[(yr + i*yi) * exp(+i*theta)] where exp(+i*theta) = cos_w - i*sin_w,
+    # since _dft_matrix builds its angles negated. That expands to
+    # yr*cos + yi*sin — a PLUS. It was a minus here, which left the
+    # standalone layer wrong by ~1e-1 while the assembled model still
+    # squeaked under an absolute 1e-4 tolerance on smaller activations.
+    cos_iw, sin_iw = cos_w, sin_w
+    out = (
+        torch.einsum(&quot;bchk,kw-&gt;bchw&quot;, yr * weight, cos_iw)
+        + torch.einsum(&quot;bchk,kw-&gt;bchw&quot;, yi * weight, sin_iw)
+    ) * scale
+
+    return out</code></pre>
+</div>
+
+<h2>Hardware</h2>
+<p>The carrier PCB is generated by Python scripts rather than drawn by hand, so placement, routing and silkscreen rebuild from one geometry file. Two layers, 82 × 71 mm, DRC and ERC clean in KiCad.</p>
+<figure>
+  <img src="img/pcb-rev-a.svg" alt="Two-layer carrier PCB, rev A, with headers for the XIAO module, display, sensors and battery." loading="lazy">
+  <figcaption>Carrier PCB rev A, exported from KiCad.</figcaption>
+</figure>
+<p>The enclosure is parametric in both CadQuery and FreeCAD, with printable STL and STEP files in the repository.</p>
+<figure>
+  <img src="img/enclosure.png" alt="Rendered back shell and front bezel of the badge enclosure." loading="lazy">
+  <figcaption>Back shell and bezel, rendered from the exported print meshes.</figcaption>
+</figure>
+
+<h2>Limits</h2>
+<p>The PM2.5 sensor is not calibrated against a reference monitor yet. Optical sensors read high in humid air, which is Delhi in winter, so dose works for comparing shifts and places but not as an absolute number. The forecast in the demo is a replay of October 2025, labelled as such in the app, not a live feed. Calibrating against a CPCB station is the next step.</p>
+
+<footer>
+  <p>© 2026 Shaurya Attreya. Code released under the MIT License at <a href="https://github.com/ShauryaAttreya37/aether-smart-badge">github.com/ShauryaAttreya37/aether-smart-badge</a>.</p>
+</footer>
+
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

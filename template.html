@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aether Smart Badge · Shaurya Attreya</title>
+<meta name="description" content="A wearable PM2.5 dose badge, phone app and Delhi air-quality forecast. Designed and built by Shaurya Attreya.">
+<meta name="author" content="Shaurya Attreya">
+<link rel="stylesheet" media="(prefers-color-scheme: light)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+<link rel="stylesheet" media="(prefers-color-scheme: dark)" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1d232a;
+    --muted: #5d6874;
+    --line: #dde3e9;
+    --code-bg: #f6f8fa;
+    --link: #0b62c4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1318;
+      --fg: #e4e9ee;
+      --muted: #9aa6b2;
+      --line: #2a323b;
+      --code-bg: #161b22;
+      --link: #6cb0ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 780px; margin: 0 auto; padding: 48px 16px 64px; }
+  a { color: var(--link); }
+  h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 8px; }
+  h2 { font-size: 1.35rem; margin: 56px 0 12px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .lede { font-size: 1.15rem; margin: 0 0 20px; }
+  .credit { margin: 0 0 8px; font-weight: 600; }
+  .links { margin: 0; color: var(--muted); }
+  dl.facts { display: grid; grid-template-columns: max-content 1fr; gap: 6px 20px; margin: 28px 0 0; }
+  dl.facts dt { color: var(--muted); }
+  dl.facts dd { margin: 0; }
+  figure { margin: 24px 0; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  figcaption, .note { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+  th, td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  .table-wrap { overflow-x: auto; }
+  .code { margin: 20px 0 28px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .code-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 8px 12px; background: var(--code-bg); border-bottom: 1px solid var(--line); font-size: 0.85rem; }
+  .code-head code { font-weight: 600; }
+  pre { margin: 0; max-height: 520px; overflow: auto; }
+  pre code.hljs { padding: 14px 16px; font-size: 13.5px; line-height: 1.5; background: var(--code-bg); }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  p code { font-size: 0.9em; background: var(--code-bg); padding: 1px 4px; border-radius: 4px; }
+  footer { margin-top: 64px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+  @media (max-width: 520px) {
+    body { font-size: 16px; }
+    h1 { font-size: 1.7rem; }
+    dl.facts { grid-template-columns: 1fr; gap: 0; }
+    dl.facts dd { margin-bottom: 10px; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Aether Smart Badge</h1>
+  <p class="lede">A clip-on badge that measures the PM2.5 an outdoor worker breathes, buzzes before exposure gets dangerous, and adds up the dose over a shift. A phone app reads it over Bluetooth and shows a 72-hour pollution forecast for Delhi.</p>
+  <p class="credit">Designed and built by Shaurya Attreya</p>
+  <p class="links">
+    <a href="https://github.com/ShauryaAttreya37/aether-smart-badge">Source code</a> ·
+    <a href="https://github.com/ShauryaAttreya37">GitHub</a> ·
+    <a href="https://shaurya-attreya-portfolio.vercel.app">Portfolio</a>
+  </p>
+  <dl class="facts">
+    <dt>My role</dt><dd>Solo build: firmware, PCB, enclosure, phone app, API server, forecast model</dd>
+    <dt>Built for</dt><dd>vivo Ignite 2026, a national student innovation competition in India</dd>
+    <dt>When</dt><dd>July to September 2026</dd>
+    <dt>Stack</dt><dd>C++ on ESP32-C3 (PlatformIO) · JavaScript PWA with Web Bluetooth · Python, FastAPI · PyTorch, scikit-learn, ONNX · KiCad, CadQuery, FreeCAD</dd>
+    <dt>Parts cost</dt><dd>₹4,433 for the core build</dd>
+  </dl>
+</header>
+
+<h2>Why</h2>
+<p>Delhi publishes hourly air-quality numbers for the city and for about forty monitoring stations. A traffic constable standing at one junction for eight hours breathes something different, and nobody records what they accumulate. The badge measures at the person, and the phone integrates concentration over time into a dose in µg·h/m³, compared against a budget for that job.</p>
+
+<figure>
+  <img src="img/system-architecture.svg" alt="Architecture: the badge sends PM2.5 to the phone over BLE, the phone writes alert commands back, and a FastAPI server sends a 72-hour forecast grid produced by an offline model pipeline.">
+  <figcaption>Three parts. The badge never runs the model, and the server never sees who is wearing a badge.</figcaption>
+</figure>
+
+<h2>The badge</h2>
+<p>A Seeed XIAO ESP32-C3 reads a Sensirion SPS30 laser particle sensor over UART and a BME280 for temperature and humidity over I²C. It shows the reading on a 2.8" TFT, drives a haptic motor and an alert LED, and sends readings to the phone every 5 seconds over a custom BLE GATT service. Dose is saved to flash every minute so a reset does not lose the shift.</p>
+<p>The badge has its own alert thresholds so it still works with no phone nearby. When the phone is connected it can escalate the alert using dose and forecast, but it can never lower one.</p>
+
+{{snippet firmware/src/main.cpp 207 224 cpp}}
+
+<p>Bring-up had real hardware faults. One was an I²C sensor that latched the bus low mid-byte. A CPU reset doesn't clear that, because the sensor never loses power, so the firmware clocks the stuck byte out by hand at boot:</p>
+
+{{snippet firmware/src/main.cpp 59 102 cpp}}
+
+<h2>The phone app</h2>
+<p>An installable web app with no framework and no build step at serve time. It connects to the badge with Web Bluetooth, integrates dose, decides alerts per job role (traffic police, delivery rider, construction), and shows which hours of the shift need a mask. Dose and location history stay on the phone. 142 tests cover the logic, colour contrast and render performance.</p>
+<p>The dose integrator uses the trapezoid rule between readings. A sensor fault breaks continuity, so the next good reading cannot integrate across a gap with no data:</p>
+
+{{snippet app/js/dose.mjs 37 70 javascript}}
+
+<h2>The forecast model</h2>
+<p>The server publishes a 72-hour PM2.5 forecast on a 64 × 64 grid over Delhi, about 2.2 km per cell. Inputs are CPCB station readings, MODIS MAIAC aerosol optical depth, TROPOMI NO₂ and ERA5 weather (wind, boundary-layer height, temperature, humidity).</p>
+<p>I trained two models: a Fourier Neural Operator and a gradient-boosted field model. Before the first training run I committed an evaluation protocol: six stations held out by geography, a frozen test winter, and a pass mark of beating persistence at +24 hours. The FNO missed that mark. The gradient-boosted model passed, so it ships, and the app labels which model produced the forecast.</p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Horizon</th><th>Model MAE / RMSE</th><th>Persistence MAE / RMSE</th></tr></thead>
+  <tbody>
+    <tr><td>+1 h</td><td>52.14 / 83.05</td><td><strong>16.65 / 41.02</strong></td></tr>
+    <tr><td>+6 h</td><td><strong>50.11 / 80.33</strong></td><td>58.66 / 100.71</td></tr>
+    <tr><td>+24 h</td><td><strong>51.14 / 84.62</strong></td><td>51.86 / 99.46</td></tr>
+    <tr><td>+48 h</td><td><strong>52.60 / 87.29</strong></td><td>60.66 / 108.94</td></tr>
+    <tr><td>+72 h</td><td><strong>53.47 / 88.07</strong></td><td>64.78 / 114.55</td></tr>
+  </tbody>
+</table>
+</div>
+<p class="note">µg/m³ on held-out stations, frozen test winter. Persistence means "the next hours look like now". It wins the first hour; after that the model's error stays flat while persistence's grows. Winter concentrations average 150–190 µg/m³.</p>
+
+<p>The FNO had to export to ONNX for the server, and the FFT ops did not survive the export. I wrote the spectral layer a second way, as explicit DFT matrix multiplies, and a self-test checks that the two paths agree:</p>
+
+{{snippet model/fno.py 28 38 python}}
+{{snippet model/fno.py 118 189 python}}
+
+<h2>Hardware</h2>
+<p>The carrier PCB is generated by Python scripts rather than drawn by hand, so placement, routing and silkscreen rebuild from one geometry file. Two layers, 82 × 71 mm, DRC and ERC clean in KiCad.</p>
+<figure>
+  <img src="img/pcb-rev-a.svg" alt="Two-layer carrier PCB, rev A, with headers for the XIAO module, display, sensors and battery." loading="lazy">
+  <figcaption>Carrier PCB rev A, exported from KiCad.</figcaption>
+</figure>
+<p>The enclosure is parametric in both CadQuery and FreeCAD, with printable STL and STEP files in the repository.</p>
+<figure>
+  <img src="img/enclosure.png" alt="Rendered back shell and front bezel of the badge enclosure." loading="lazy">
+  <figcaption>Back shell and bezel, rendered from the exported print meshes.</figcaption>
+</figure>
+
+<h2>Limits</h2>
+<p>The PM2.5 sensor is not calibrated against a reference monitor yet. Optical sensors read high in humid air, which is Delhi in winter, so dose works for comparing shifts and places but not as an absolute number. The forecast in the demo is a replay of October 2025, labelled as such in the app, not a live feed. Calibrating against a CPCB station is the next step.</p>
+
+<footer>
+  <p>© 2026 Shaurya Attreya. Code released under the MIT License at <a href="https://github.com/ShauryaAttreya37/aether-smart-badge">github.com/ShauryaAttreya37/aether-smart-badge</a>.</p>
+</footer>
+
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>

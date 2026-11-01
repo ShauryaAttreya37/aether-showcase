@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="14">
+  <title>Aether system architecture</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3b4652"/>
+    </marker>
+  </defs>
+  <rect width="960" height="520" fill="#ffffff"/>
+
+  <!-- Badge -->
+  <rect x="24" y="40" width="290" height="300" rx="10" fill="#f3f6f9" stroke="#3b4652" stroke-width="1.5"/>
+  <text x="44" y="70" font-size="17" font-weight="600" fill="#17202a">Badge</text>
+  <text x="44" y="90" fill="#5b6672">Seeed XIAO ESP32-C3, PlatformIO</text>
+  <g fill="#17202a">
+    <text x="44" y="128">Sensirion SPS30 PM2.5</text><text x="250" y="128" fill="#5b6672">UART</text>
+    <text x="44" y="154">Bosch BME280 temp/RH</text><text x="250" y="154" fill="#5b6672">I²C</text>
+    <text x="44" y="180">DRV2605L haptic driver</text><text x="250" y="180" fill="#5b6672">I²C</text>
+    <text x="44" y="206">ILI9341 2.8" TFT</text><text x="250" y="206" fill="#5b6672">SPI</text>
+    <text x="44" y="232">Alert LED</text><text x="250" y="232" fill="#5b6672">GPIO</text>
+    <text x="44" y="258">LiPo + MT3608 boost (5 V)</text>
+  </g>
+  <text x="44" y="296" fill="#5b6672">Local alert tiers 80 / 140 / 230 µg/m³</text>
+  <text x="44" y="316" fill="#5b6672">Dose saved to flash every 60 s</text>
+
+  <!-- Phone -->
+  <rect x="380" y="40" width="270" height="300" rx="10" fill="#f3f6f9" stroke="#3b4652" stroke-width="1.5"/>
+  <text x="400" y="70" font-size="17" font-weight="600" fill="#17202a">Phone app (PWA)</text>
+  <text x="400" y="90" fill="#5b6672">Plain ES modules, Web Bluetooth</text>
+  <g fill="#17202a">
+    <text x="400" y="128">Live PM2.5 every 5 s</text>
+    <text x="400" y="154">Dose integrator ∫ C dt (µg·h/m³)</text>
+    <text x="400" y="180">Budgets per role: police, rider,</text>
+    <text x="400" y="198">construction</text>
+    <text x="400" y="226">Alert engine writes back to badge</text>
+    <text x="400" y="252">Mask-hours bar for the shift</text>
+    <text x="400" y="278">Works offline (service worker)</text>
+  </g>
+  <text x="400" y="316" fill="#5b6672">Dose and GPS stay on the phone</text>
+
+  <!-- Server -->
+  <rect x="716" y="40" width="220" height="300" rx="10" fill="#f3f6f9" stroke="#3b4652" stroke-width="1.5"/>
+  <text x="736" y="70" font-size="17" font-weight="600" fill="#17202a">Server</text>
+  <text x="736" y="90" fill="#5b6672">FastAPI, same origin as PWA</text>
+  <g fill="#17202a">
+    <text x="736" y="128">GET /forecast</text>
+    <text x="736" y="148" fill="#5b6672">72 h, 64×64 grid, ≈2.2 km</text>
+    <text x="736" y="180">GET /health</text>
+    <text x="736" y="200" fill="#5b6672">model provenance</text>
+    <text x="736" y="232">Stores no user data</text>
+  </g>
+
+  <!-- arrows -->
+  <line x1="316" y1="150" x2="376" y2="150" stroke="#3b4652" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="322" y="140" font-size="12" fill="#3b4652">BLE notify</text>
+  <line x1="378" y1="210" x2="318" y2="210" stroke="#3b4652" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="322" y="230" font-size="12" fill="#3b4652">alert_cmd</text>
+  <line x1="714" y1="140" x2="654" y2="140" stroke="#3b4652" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="660" y="130" font-size="12" fill="#3b4652">HTTPS</text>
+
+  <!-- Model pipeline -->
+  <rect x="380" y="380" width="556" height="112" rx="10" fill="#fbf7ef" stroke="#8a6d2f" stroke-width="1.5"/>
+  <text x="400" y="408" font-size="17" font-weight="600" fill="#17202a">Offline model pipeline (Python: Colab + GPU VM)</text>
+  <text x="400" y="434" fill="#17202a">CPCB PM2.5 + MAIAC AOD + TROPOMI NO₂ + ERA5 → 64×64 Delhi grid</text>
+  <text x="400" y="458" fill="#17202a">Gradient-boosted field model (ships) · Fourier Neural Operator (research)</text>
+  <text x="400" y="480" fill="#5b6672">Scored on 6 stations held out by geography; protocol frozen before training</text>
+  <line x1="826" y1="378" x2="826" y2="344" stroke="#3b4652" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="834" y="366" font-size="12" fill="#3b4652">forecast cache</text>
+
+  <text x="24" y="420" font-size="13" fill="#5b6672">Aether Smart Badge</text>
+  <text x="24" y="440" font-size="13" fill="#5b6672">Designed and built by Shaurya Attreya</text>
+</svg>
