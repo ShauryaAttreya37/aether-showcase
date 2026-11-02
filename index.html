@@ -66,6 +66,7 @@
     dl.facts dd { margin-bottom: 10px; }
   }
 </style>
+<link rel="stylesheet" href="demos.css">
 </head>
 <body>
 <main>
@@ -88,7 +89,18 @@
   </dl>
 </header>
 
-<h2>Why</h2>
+<nav class="section-nav" aria-label="Sections">
+  <a href="#why">Why</a>
+  <a href="#badge">Badge</a>
+  <a href="#app">App</a>
+  <a href="#forecast">Forecast</a>
+  <a href="#hardware">Hardware</a>
+  <a href="#limits">Limits</a>
+</nav>
+
+<noscript><p class="note">The interactive sections need JavaScript. Everything else on this page, including the results table, works without it.</p></noscript>
+
+<h2 id="why">Why</h2>
 <p>Delhi publishes hourly air-quality numbers for the city and for about forty monitoring stations. A traffic constable standing at one junction for eight hours breathes something different, and nobody records what they accumulate. The badge measures at the person, and the phone integrates concentration over time into a dose in µg·h/m³, compared against a budget for that job.</p>
 
 <figure>
@@ -96,7 +108,7 @@
   <figcaption>Three parts. The badge never runs the model, and the server never sees who is wearing a badge.</figcaption>
 </figure>
 
-<h2>The badge</h2>
+<h2 id="badge">The badge</h2>
 <p>A Seeed XIAO ESP32-C3 reads a Sensirion SPS30 laser particle sensor over UART and a BME280 for temperature and humidity over I²C. It shows the reading on a 2.8" TFT, drives a haptic motor and an alert LED, and sends readings to the phone every 5 seconds over a custom BLE GATT service. Dose is saved to flash every minute so a reset does not lose the shift.</p>
 <p>The badge has its own alert thresholds so it still works with no phone nearby. When the phone is connected it can escalate the alert using dose and forecast, but it can never lower one.</p>
 
@@ -172,7 +184,7 @@ static void recoverI2cBus() {
 }</code></pre>
 </div>
 
-<h2>The phone app</h2>
+<h2 id="app">The phone app</h2>
 <p>An installable web app with no framework and no build step at serve time. It connects to the badge with Web Bluetooth, integrates dose, decides alerts per job role (traffic police, delivery rider, construction), and shows which hours of the shift need a mask. Dose and location history stay on the phone. 142 tests cover the logic, colour contrast and render performance.</p>
 <p>The dose integrator uses the trapezoid rule between readings. A sensor fault breaks continuity, so the next good reading cannot integrate across a gap with no data:</p>
 
@@ -214,12 +226,31 @@ static void recoverI2cBus() {
 }</code></pre>
 </div>
 
-<h2>The forecast model</h2>
+<section class="demo" aria-labelledby="shift-demo-title">
+  <h3 id="shift-demo-title">Run a shift through the app's code</h3>
+  <p class="demo-intro">This runs the app's own <code>dose.mjs</code> and <code>alerts.mjs</code> in your browser, one reading per minute. The exposure patterns are illustrative, not measurements. The budget is 15 µg/m³ × shift hours × a job's exertion factor: a reference point, not a regulatory limit. The forecast input to the alerts is left out here.</p>
+  <div id="shift-demo"></div>
+</section>
+
+<h2 id="forecast">The forecast model</h2>
 <p>The server publishes a 72-hour PM2.5 forecast on a 64 × 64 grid over Delhi, about 2.2 km per cell. Inputs are CPCB station readings, MODIS MAIAC aerosol optical depth, TROPOMI NO₂ and ERA5 weather (wind, boundary-layer height, temperature, humidity).</p>
+
+<section class="demo" aria-labelledby="forecast-demo-title">
+  <h3 id="forecast-demo-title">Explore the forecast</h3>
+  <p class="demo-intro">The forecast file the server ships: a hindcast from the gradient-boosted model starting 2 October 2025, not a live feed. Fields between its directly trained horizons are linearly interpolated, and values are rounded to whole µg/m³. Hover for a cell's value, click to select it, or drag the slider to move through the 72 hours. Place markers are approximate.</p>
+  <p class="demo-intro">Read the middle of the map, not the edges. The model trains only at station cells, with grid row and column among its inputs, and its PM2.5 inputs stop 40 km from the nearest station. The hard-edged blocks near the edges are artefacts of that extrapolation, not pollution sources.</p>
+  <div id="forecast-demo"></div>
+</section>
+
 <p>I trained two models: a Fourier Neural Operator and a gradient-boosted field model. Before the first training run I committed an evaluation protocol: six stations held out by geography, a frozen test winter, and a pass mark of beating persistence at +24 hours. The FNO missed that mark. The gradient-boosted model passed, so it ships, and the app labels which model produced the forecast.</p>
 
+<section class="demo" aria-labelledby="model-chart-title">
+  <h3 id="model-chart-title">Forecast error by horizon, µg/m³</h3>
+  <div id="model-chart"></div>
+</section>
+
 <div class="table-wrap">
-<table>
+<table id="horizon-table">
   <thead><tr><th>Horizon</th><th>Model MAE / RMSE</th><th>Persistence MAE / RMSE</th></tr></thead>
   <tbody>
     <tr><td>+1 h</td><td>52.14 / 83.05</td><td><strong>16.65 / 41.02</strong></td></tr>
@@ -324,7 +355,7 @@ static void recoverI2cBus() {
     return out</code></pre>
 </div>
 
-<h2>Hardware</h2>
+<h2 id="hardware">Hardware</h2>
 <p>The carrier PCB is generated by Python scripts rather than drawn by hand, so placement, routing and silkscreen rebuild from one geometry file. Two layers, 82 × 71 mm, DRC and ERC clean in KiCad.</p>
 <figure>
   <img src="img/pcb-rev-a.svg" alt="Two-layer carrier PCB, rev A, with headers for the XIAO module, display, sensors and battery." loading="lazy">
@@ -336,8 +367,9 @@ static void recoverI2cBus() {
   <figcaption>Back shell and bezel, rendered from the exported print meshes.</figcaption>
 </figure>
 
-<h2>Limits</h2>
+<h2 id="limits">Limits</h2>
 <p>The PM2.5 sensor is not calibrated against a reference monitor yet. Optical sensors read high in humid air, which is Delhi in winter, so dose works for comparing shifts and places but not as an absolute number. The forecast in the demo is a replay of October 2025, labelled as such in the app, not a live feed. Calibrating against a CPCB station is the next step.</p>
+<p>The dose budget is a heuristic, not an exposure limit, and its exertion factor needs rework. A higher factor currently raises a job's budget, although harder breathing should lower it, and dose is not yet weighted by breathing rate.</p>
 
 <footer>
   <p>© 2026 Shaurya Attreya. Code released under the MIT License at <a href="https://github.com/ShauryaAttreya37/aether-smart-badge">github.com/ShauryaAttreya37/aether-smart-badge</a>.</p>
@@ -346,5 +378,6 @@ static void recoverI2cBus() {
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
+<script type="module" src="js/main.mjs"></script>
 </body>
 </html>

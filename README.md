@@ -13,4 +13,11 @@ python build.py ../aether-smart-badge
 
 Edit `template.html`, not `index.html`.
 
+`build.py` also copies the app's `config.mjs`, `dose.mjs` and `alerts.mjs` into `app-js/` and packs the cached forecast into `data/`, so the interactive sections run the shipped logic on the shipped data. Page code is in `js/` and `demos.css`. Run the tests with:
+
+```bash
+node --test tests/
+python3 -m unittest discover tests
+```
+
 © 2026 Shaurya Attreya. MIT License.
